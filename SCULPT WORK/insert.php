@@ -1,52 +1,50 @@
 <?php
-      
-            $name = $_POST['name'];
-            $phoneCode = $_POST['phoneCode'];
-            $phone = $_POST['phone'];
-            $email = $_POST['email'];
-            $subject = $_POST['subject'];
-            $message = $_POST['message']; 
-        
-if (!empty($name) || !empty($phoneCode) || !empty($phone) || !empty($email) || !empty($subject) || !empty($message) ){
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $name = $_POST['name'];
+    $phoneCode = $_POST['phoneCode'];
+    $phone = $_POST['phone'];
+    $email = $_POST['email'];
+    $subject = $_POST['subject'];
+    $message = $_POST['message'];
 
-    $host = "localhost";
-    $dbUsername = "root";
-    $dbPassword = "";
-    $dbname = "tara";
+    if (!empty($name) && !empty($phoneCode) && !empty($phone) && !empty($email) && !empty($subject) && !empty($message)) {
 
-    $conn = new mysqli ($host, $dbUsername, $dbPassword, $dbname);
+        $host = "localhost";
+        $dbUsername = "root";
+        $dbPassword = "";
+        $dbname = "tara";
 
-    if (mysqli_connect_error()) {
-        die('Connect Error('.mysqli_connect_errno().')'. mysqli_connect_error());
-    }else {
-        $SELECT = "SELECT email From register Where email = ? Limit = 1";
-        $INSERT = "INSERT INTO register (name, phoneCode, phone, email, subject, message) values(?, ?, ?, ?, ?, ?)";
+        $conn = new mysqli($host, $dbUsername, $dbPassword, $dbname);
 
-        $stmt = $conn->prepare($SELECT);
-        $stmt -> bind_param("s", $email);
-        $stmt -> execute();
-        $stmt -> bind_results($email);
-        $stmt -> store_results();
-        $rnum = $stmt->num_rows;
+        if (mysqli_connect_error()) {
+            die('Connect Error (' . mysqli_connect_errno() . ')' . mysqli_connect_error());
+        } else {
+            $SELECT = "SELECT * FROM register WHERE email = ? LIMIT 1";
+            $INSERT = "INSERT INTO register (name, phoneCode, phone, email, subject, message) VALUES (?, ?, ?, ?, ?, ?)";
 
-} if($rnum ==0){
-    $stmt->close();
+            $stmt = $conn->prepare($SELECT);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
+            $rnum = $stmt->num_rows;
+            
+            $stmt->close();
 
-    $stmt ->$conn_prepare($INSERT);
-    $stmt ->bind_param("s,i,i,s,s,s", $name, $phoneCode, $phone, $email, $subject, $message );
+            if ($rnum === 0) {
+                $stmt = $conn->prepare($INSERT);
+                $stmt->bind_param("ssssss", $name, $phoneCode, $phone, $email, $subject, $message);
+                $stmt->execute();
 
-    $stmt ->execute();
-
-    echo "Message sent successfully";
-}else{
-    echo "Someone has already used this credentials";
+                echo "Message sent successfully";
+            } else {
+                echo "Someone has already used this credentials";
+            }
+            
+            $stmt->close();
+            $conn->close();
+        }
+    } else {
+        echo "All fields are required";
+    }
 }
-$stmt->close();
-$conn->close();
-}
-else{
-    echo "All fields are required";
-    die();
-}
-
 ?>

@@ -63,7 +63,7 @@
 <!--Contact Us form-->
 		<div class="Contact-col">
 			<form action="insert.php" method="POST">
-				<input type="text" placeholder="Enter Your Name" required>
+				<input type="text" name="name" placeholder="Enter Your Name" required>
                 <select name="phoneCode" required>
                     <option selected hidden value="">Country Code</option>
                     <option value="977">977</option>
@@ -73,10 +73,10 @@
                     <option value="972">972</option>
                     <option value="974">974</option>
                    </select>
-                <input type="phone" placeholder="Phone" required>
-				<input type="email" placeholder="Enter Email Address" required>
-				<input type="text" placeholder="Enter Your Subject" required>
-				<textarea rows="8" placeholder="Message" required></textarea>
+                <input name="phone" type="phone" placeholder="Phone" required>
+				<input name="email" type="email" placeholder="Enter Email Address" required>
+				<input name="subject" type="text" placeholder="Enter Your Subject" required>
+				<textarea name="message" rows="8" placeholder="Message" required></textarea>
 				<button type="submit" class="hero-btn red-btn">Send</button>
 			</form>
 		</div>
